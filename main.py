@@ -1,15 +1,20 @@
+import os
 import asyncio
 from fastapi import FastAPI
-from tapo import ApiClient
+from tapo import ApiClient  # type: ignore
 from pydantic import BaseModel
+from dotenv import load_dotenv
+
+# Cargar variables de entorno desde el archivo .env
+load_dotenv()
 
 app = FastAPI()
 
-# Conexión a tu cuenta Tapo
-client = ApiClient("juancaieslitoral1999@gmail.com", "Malagacc1")
+# Conexión a tu cuenta Tapo usando las variables de entorno
+client = ApiClient(os.getenv("TAPO_USER"), os.getenv("TAPO_PASS"))
 
 # Define las IPs de las bombillas
-device_ips = ["172.20.10.3", "172.20.10.4"]
+device_ips = ["172.20.10.5", "172.20.10.4"]
 
 # Inicializa controladores de dispositivos
 devices = {}
@@ -63,8 +68,6 @@ async def cambiar_color(req: ColorRequest):
     except Exception as e:
         print(f"Error al cambiar color: {e}")
         return {"status": "Error al cambiar el color"}
-
-
 
 @app.post("/brightness")
 async def cambiar_brillo(req: BrightnessRequest):
